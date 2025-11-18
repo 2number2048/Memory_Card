@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import (
     QGroupBox,
     QButtonGroup,
 )
-from random import shuffle
+from random import randint, shuffle
 
 class Questions():
     def __init__(self, question, right_answer, wrong1, wrong2, wrong3):
@@ -126,14 +126,18 @@ def show_correct(res):
 def check_answer():
     if answers[0].isChecked():
         show_correct("Correct!")
+        window.score += 1
+        print('Statistics\n-Total questions: ', window.total, '\n-Right answers: ', window.score)
+        print('Rating: ', (window.score/window.total*100), '%')
     else:
         if answers[1].isChecked() or answers[2].isChecked() or answers[3].isChecked():
             show_correct("Incorrect!")
+            print('Rating: ', (window.score/window.total*100), '%')
 def next_questions():
-    window.cur_questions = window.cur_questions + 1
-    if window.cur_questions == len(Questions_list):
-        window.cur_questions = 0
-    q = Questions_list[window.cur_questions]
+    window.total += 1
+    print('Statistics\n-Total Questions: ', window.total, '\n-Right Answers: ', window.score)
+    cur_questions = randint(0, len(Questions_list) - 1)
+    q = Questions_list[cur_questions]
     ask(q)
 def click_OK():
     if answerbutton.text() == 'Answer':
@@ -173,9 +177,10 @@ Questions_list.append(Questions("How many people need to gather for the probabil
 Questions_list.append(Questions("Milk is made from nutrients in a cow’s blood. How many litres of blood are needed to make 1 litre of milk?","450","10","5","20"))
 Questions_list.append(Questions("50 zoo animals are flipped over sequentially. What was the lion’s number in the sequence?","17","45","05","21"))
 
-window.cur_questions = -1
 
 answerbutton.clicked.connect(click_OK)
+window.score = 0
+window.total = 0
 next_questions()
 
 window.show()
